@@ -7,16 +7,13 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Component
-public class JsonDateSerializer extends JsonSerializer<LocalDate> {
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+public class JsonAmountSerializer extends JsonSerializer<Integer> {
 
     @Override
-    public void serialize(LocalDate date, JsonGenerator gen, SerializerProvider provider)
+    public void serialize(Integer amount, JsonGenerator gen, SerializerProvider provider)
             throws IOException, JsonProcessingException {
-        gen.writeString(date.format(dateFormat));
+        gen.writeNumber(((double)amount)/100);
     }
 }

@@ -1,6 +1,7 @@
 package backendcodingchallenge;
 
-import org.springframework.boot.*;
+
+import org.springframework.boot.SpringApplication;
 
 @org.springframework.boot.autoconfigure.SpringBootApplication
 public class SpringBootApplication {

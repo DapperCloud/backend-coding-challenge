@@ -1,34 +1,45 @@
 package backendcodingchallenge.model;
 
-import backendcodingchallenge.JsonDateSerializer;
+import backendcodingchallenge.JsonAmountSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Date;
 
 @JsonAutoDetect
+@Entity
+@Data
+@NoArgsConstructor
 public class Expense {
 
-    private LocalDate date;
-    private int value;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(columnDefinition = "DATE")
+    private Date date;
+
+    @Column
+    private int amount;
+
+    @Column
     private String reason;
 
-    public Expense(LocalDate date, int value, String reason) {
-        this.date = date;
-        this.value = value;
-        this.reason = reason;
+    @JsonSerialize(using= JsonAmountSerializer.class)
+    public int getAmount() {
+        return amount;
     }
 
-    @JsonSerialize(using= JsonDateSerializer.class)
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public String getReason() {
-        return reason;
+    @JsonSerialize(using= JsonAmountSerializer.class)
+    public int getVat() {
+        return (int)Math.round((double)amount/5);
     }
 }
