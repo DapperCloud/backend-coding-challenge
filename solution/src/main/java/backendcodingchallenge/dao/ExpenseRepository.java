@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 
-    public List<Expense> findAll();
+    List<Expense> findAll();
 }

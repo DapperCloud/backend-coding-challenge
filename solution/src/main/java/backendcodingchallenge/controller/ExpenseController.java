@@ -3,7 +3,9 @@ package backendcodingchallenge.controller;
 import backendcodingchallenge.model.Expense;
 import backendcodingchallenge.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -15,7 +17,11 @@ public class ExpenseController {
     private ExpenseService service;
 
     @RequestMapping("/app/expenses")
-    List<Expense> getAllExpenses() {
+    public List<Expense> getAllExpenses() {
         return service.getAllExpenses();
     }
+
+    @RequestMapping(value = "/app/expenses", method = RequestMethod.POST)
+    public void createNewExpense(@RequestBody Expense expense) { service.saveExpense(expense);}
+
 }

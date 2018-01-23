@@ -14,7 +14,6 @@
         <version>1.5.9.RELEASE</version>
     </parent>
 
-    <!-- Add typical dependencies for a web application -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -27,7 +26,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -38,15 +36,12 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.20</version>
             <scope>provided</scope>
         </dependency>
-
-
 
     </dependencies>
 
