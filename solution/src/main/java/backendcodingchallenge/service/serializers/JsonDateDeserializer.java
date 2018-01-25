@@ -19,7 +19,7 @@ public class JsonDateDeserializer extends JsonDeserializer<Date> {
 
 
         SimpleDateFormat format = new SimpleDateFormat(JsonDateSerializer.FORMAT);
-        format.setLenient(false); //Let's not accept "310/24/2010" and convert it in a somewhat-related date
+        format.setLenient(false); //Let's not accept "310/24/2010" and convert it in a weirdly-related date
         String date = jsonparser.getText();
 
         try {

@@ -24,3 +24,7 @@ Building the project:
 3)Run the server with "mvn spring-boot:run" (it will run the backend in a embedded tomcat server)
 
 You can then access the app on localhost:8080
+
+In a production context, we would just deploy the jar on the server, and run it with "java -jar" ; spring-boot spares
+us the trouble of installing Tomcat, as it is embedded.
+All Tomcat related configuration should simply go in application.yml
