@@ -2,16 +2,11 @@ package backendcodingchallenge.service;
 
 import backendcodingchallenge.dao.ExpenseRepository;
 import backendcodingchallenge.model.Expense;
+import backendcodingchallenge.service.external.IRatesFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-/*
-As is, this class is not really useful, since the two use cases are quite straightforward and don't really
-need any algorithmic logic ; it's here in prevision of further versions of the app, to prepare different layers
-for different concerns.
- */
 
 @Service
 public class ExpenseService {
@@ -19,13 +14,18 @@ public class ExpenseService {
     @Autowired
     private ExpenseRepository repository;
 
+    @Autowired
+    private IRatesFetcher ratesFetcher;
+
     public List<Expense> getAllExpenses() {
         return repository.findAll();
     }
 
-    public void saveExpense(Expense expense) {
+    public void createExpense(Expense expense, String currency) {
+        if(!currency.isEmpty()) {
+            double rate = ratesFetcher.getRateToGBP(currency);
+            expense.setAmount((int)Math.round(rate*expense.getAmount()));
+        }
         repository.save(expense);
     }
-
-
 }

@@ -34,7 +34,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 	$scope.saveExpense = function() {
 		if ($scope.expensesform.$valid) {
 			// Post the expense via REST
-			restExpenses.post($scope.newExpense).then(function() {
+			restExpenses.post({ date: $scope.newExpense.date, amount: $scope.newExpense.amount, reason: $scope.newExpense.reason, currency: "" }).then(function() {
 				// Reload new expenses list
 				loadExpenses();
 			});

@@ -80,11 +80,11 @@ public class ExpenseControllerIntegrationTest {
     }
 
     @Test
-    public void saveNewExpenseAndRoundAmountOk() {
+    public void saveNewExpenseAndRoundAmountAndEmptyCurrencyOK() {
         // Given
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>("{ \"date\":\"04/5/1993\", \"amount\":12.349, \"reason\":\"My Birthday !\" }", headers);
+        HttpEntity<String> entity = new HttpEntity<>("{ \"date\":\"04/5/1993\", \"amount\":12.349, \"reason\":\"My Birthday !\", \"currency\": \"\" }", headers);
 
         // When
         ResponseEntity<Void> response = restTemplate.exchange("/app/expenses", HttpMethod.POST, entity, Void.class);
@@ -94,10 +94,59 @@ public class ExpenseControllerIntegrationTest {
         List<Expense> allExpenses = expenseRepository.findAll();
         assertThat(allExpenses).hasSize(1);
         Expense savedExpense = allExpenses.get(0);
-        assertThat(savedExpense.getId()).isEqualTo(1);
         assertThat(savedExpense.getAmount()).isEqualTo(1235);
         assertThat(savedExpense.getReason()).isEqualTo("My Birthday !");
         assertThat(sdf.format(savedExpense.getDate())).isEqualTo("04/05/1993");
+    }
+
+    @Test
+    public void saveNewExpenseAndConvertEurToGbpOK() {
+        // Given
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("{ \"date\":\"04/5/1993\", \"amount\":12.349, \"reason\":\"My Birthday !\", \"currency\": \"EUR\" }", headers);
+
+        // When
+        ResponseEntity<Void> response = restTemplate.exchange("/app/expenses", HttpMethod.POST, entity, Void.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        List<Expense> allExpenses = expenseRepository.findAll();
+        assertThat(allExpenses).hasSize(1);
+        Expense savedExpense = allExpenses.get(0);
+        assertThat(savedExpense.getAmount()).isNotEqualTo(1235);
+        assertThat(savedExpense.getReason()).isEqualTo("My Birthday !");
+        assertThat(sdf.format(savedExpense.getDate())).isEqualTo("04/05/1993");
+    }
+
+    @Test
+    public void saveNewExpenseAndRoundAmountAndNoCurrencyKO() {
+        // Given
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("{ \"date\":\"04/5/1993\", \"amount\":12.349, \"reason\":\"My Birthday !\" }", headers);
+
+        // When
+        ResponseEntity<Void> response = restTemplate.exchange("/app/expenses", HttpMethod.POST, entity, Void.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(expenseRepository.findAll()).hasSize(0);
+    }
+
+    @Test
+    public void saveNewExpenseAndInvalidCurrencyKO() {
+        // Given
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>("{ \"date\":\"04/5/1993\", \"amount\":12.349, \"reason\":\"My Birthday !\", \"currency\": \"USD\" }", headers);
+
+        // When
+        ResponseEntity<Void> response = restTemplate.exchange("/app/expenses", HttpMethod.POST, entity, Void.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(expenseRepository.findAll()).hasSize(0);
     }
 
     @Test

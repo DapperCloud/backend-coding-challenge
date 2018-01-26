@@ -11,3 +11,8 @@ spring:
       show_sql: false
       format_sql: false
       ddl-auto: update
+
+config:
+  external-apis:
+    connect-timeout: 20000
+    read-timeout: 20000
