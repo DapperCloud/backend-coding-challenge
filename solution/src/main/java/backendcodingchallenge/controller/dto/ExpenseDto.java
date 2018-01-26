@@ -5,7 +5,6 @@ import backendcodingchallenge.service.serializers.JsonAmountDeserializer;
 import backendcodingchallenge.service.serializers.JsonAmountSerializer;
 import backendcodingchallenge.service.serializers.JsonDateDeserializer;
 import backendcodingchallenge.service.serializers.JsonDateSerializer;
-import backendcodingchallenge.utils.ExpenseUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,7 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

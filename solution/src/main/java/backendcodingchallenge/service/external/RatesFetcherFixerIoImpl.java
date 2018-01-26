@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 // Implementation of the RatesFetcher interface using api.fixer.io
 
+// TODO : Use the date returned by the API to load a new rate only when it's relevant ?
+
 @Service
 public class RatesFetcherFixerIoImpl implements IRatesFetcher {
 

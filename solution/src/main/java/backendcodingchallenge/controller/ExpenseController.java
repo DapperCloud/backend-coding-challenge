@@ -9,6 +9,7 @@ import backendcodingchallenge.service.exceptions.UnknownCurrencyException;
 import backendcodingchallenge.utils.ExpenseUtils;
 import javassist.tools.web.BadHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,9 @@ public class ExpenseController {
     @Autowired
     private ExpenseUtils utils;
 
+    @Value("${config.business.vat-rate}")
+    private double vatRate;
+
     @RequestMapping("/app/expenses")
     public List<ExpenseDto> getAllExpenses() {
         return service.getAllExpenses()
@@ -43,6 +47,11 @@ public class ExpenseController {
     @RequestMapping(value = "/app/expenses", method = RequestMethod.POST)
     public void createNewExpense(@RequestBody @Valid ExpenseDto expenseDto) throws BadHttpRequest {
         service.createExpense(Expense.builder().date(expenseDto.getDate()).amount(expenseDto.getAmount()).reason(expenseDto.getReason()).build(), expenseDto.getCurrency());
+    }
+
+    @RequestMapping(value = "/app/expenses/vat_rate")
+    public double getVatRate() {
+        return vatRate;
     }
 
     @ExceptionHandler(UnknownCurrencyException.class)

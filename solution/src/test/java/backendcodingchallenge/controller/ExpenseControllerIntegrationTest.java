@@ -6,7 +6,6 @@ import static java.util.Collections.singletonList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import backendcodingchallenge.AppConfig;
 import backendcodingchallenge.controller.dto.ExpenseDto;
 import backendcodingchallenge.dao.ExpenseRepository;
 import backendcodingchallenge.model.Expense;
@@ -15,25 +14,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,6 +45,9 @@ public class ExpenseControllerIntegrationTest {
 
     @Autowired
     private ExpenseRepository expenseRepository;
+
+    @Value("${config.business.vat-rate}")
+    private double vatRate;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -99,6 +94,14 @@ public class ExpenseControllerIntegrationTest {
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEmpty();
+    }
+
+    @Test
+    public void getVatRateOk() {
+        ResponseEntity<Double> response = restTemplate.getForEntity("/app/expenses/vat_rate", Double.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(vatRate);
     }
 
     @Test

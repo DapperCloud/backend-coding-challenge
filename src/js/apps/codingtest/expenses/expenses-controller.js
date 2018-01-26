@@ -18,6 +18,15 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 
 	var restExpenses = $restalchemy.init({ root: $config.apiroot }).at("expenses");
 
+	var vatRate = 0;
+
+	$scope.getVat = function() {
+		if(!$scope.newExpense.amount) return 0;
+		var parsedAmount = parseFloat($scope.newExpense.amount.split(" ")[0]);
+		var amount = parsedAmount > 0 ? parsedAmount : 0;
+		return Math.round(vatRate * amount * 100) / 100;
+	};
+
 	$scope.dateOptions = {
 		changeMonth: true,
 		changeYear: true,
@@ -30,7 +39,15 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 			$scope.expenses = expenses;
 			$scope.postError = null;
 		});
-	}
+	};
+
+	var loadVatRate = function() {
+		$restalchemy.init({ root: $config.apiroot }).at("expenses/vat_rate").get().then(function(result) {
+			vatRate = result;
+		}).error(function(e) {
+			$scope.postError = e.message + "\nVAT won't be printed before you submit an expense.";
+		})
+	};
 
 	$scope.saveExpense = function() {
 		if ($scope.expensesform.$valid) {
@@ -54,5 +71,6 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 
 	// Initialise scope variables
 	loadExpenses();
+	loadVatRate();
 	$scope.clearExpense();
 }]);
