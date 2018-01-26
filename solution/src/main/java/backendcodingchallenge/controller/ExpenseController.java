@@ -6,6 +6,7 @@ import backendcodingchallenge.service.ExpenseService;
 import backendcodingchallenge.service.exceptions.ExternalApiInvalidAnswerException;
 import backendcodingchallenge.service.exceptions.ExternalApiNotOkStatusException;
 import backendcodingchallenge.service.exceptions.UnknownCurrencyException;
+import backendcodingchallenge.utils.ExpenseUtils;
 import javassist.tools.web.BadHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ExpenseController {
@@ -27,9 +29,15 @@ public class ExpenseController {
     @Autowired
     private ExpenseService service;
 
+    @Autowired
+    private ExpenseUtils utils;
+
     @RequestMapping("/app/expenses")
-    public List<Expense> getAllExpenses() {
-        return service.getAllExpenses();
+    public List<ExpenseDto> getAllExpenses() {
+        return service.getAllExpenses()
+                .stream()
+                .map(e -> { ExpenseDto dto = new ExpenseDto(e); dto.setVat(utils.getVatFromAmount(e.getAmount())); return dto; })
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/app/expenses", method = RequestMethod.POST)
@@ -58,7 +66,7 @@ public class ExpenseController {
 
     @ExceptionHandler(SocketTimeoutException.class)
     @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
-    public @ResponseBody String handleException(SocketTimeoutException e) {
-        return "The external API couldn't be reached !";
+    public @ResponseBody SocketTimeoutException handleException(SocketTimeoutException e) {
+        return new SocketTimeoutException("The external API couldn't be reached !");
     }
 }

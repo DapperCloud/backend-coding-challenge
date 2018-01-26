@@ -16,3 +16,6 @@ config:
   external-apis:
     connect-timeout: 20000
     read-timeout: 20000
+
+  business:
+    vat-rate: 0.2
