@@ -39,20 +39,20 @@ public class ExpenseController {
 
     @ExceptionHandler(UnknownCurrencyException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public @ResponseBody String handleException(UnknownCurrencyException e) {
-        return e.getMessage();
+    public @ResponseBody UnknownCurrencyException handleException(UnknownCurrencyException e) {
+        return e;
     }
 
     @ExceptionHandler(ExternalApiNotOkStatusException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public @ResponseBody String handleException(ExternalApiNotOkStatusException e) {
-        return e.getMessage();
+    public @ResponseBody ExternalApiNotOkStatusException handleException(ExternalApiNotOkStatusException e) {
+        return e;
     }
 
     @ExceptionHandler(ExternalApiInvalidAnswerException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public @ResponseBody String handleException(ExternalApiInvalidAnswerException e) {
-        return e.getMessage();
+    public @ResponseBody ExternalApiInvalidAnswerException handleException(ExternalApiInvalidAnswerException e) {
+        return e;
     }
 
 

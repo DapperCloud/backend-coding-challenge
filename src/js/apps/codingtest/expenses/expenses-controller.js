@@ -28,21 +28,28 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		// Retrieve a list of expenses via REST
 		restExpenses.get().then(function(expenses) {
 			$scope.expenses = expenses;
+			$scope.postError = null;
 		});
 	}
 
 	$scope.saveExpense = function() {
 		if ($scope.expensesform.$valid) {
+			var amountParts = $scope.newExpense.amount.split(" ");
+			var amount = amountParts[0];
+			var currency = amountParts.length > 1 ? amountParts[1] : "";
 			// Post the expense via REST
-			restExpenses.post({ date: $scope.newExpense.date, amount: $scope.newExpense.amount, reason: $scope.newExpense.reason, currency: "" }).then(function() {
+			restExpenses.post({ date: $scope.newExpense.date, amount: amount, reason: $scope.newExpense.reason, currency: currency }).then(function() {
 				// Reload new expenses list
 				loadExpenses();
+			}).error(function(e) {
+				$scope.postError = e.message;	
 			});
 		}
 	};
 
 	$scope.clearExpense = function() {
 		$scope.newExpense = {};
+		$scope.postError = null;
 	};
 
 	// Initialise scope variables
